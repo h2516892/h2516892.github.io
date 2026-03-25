@@ -1,0 +1,339 @@
+/* ========================================
+   Waterfall Gallery - Solitude Theme
+   写真相册瀑布流样式
+   ======================================== */
+
+/* 页面头部 */
+.waterfall-header {
+  text-align: center;
+  padding: 2rem 0 1rem;
+}
+
+.waterfall-title {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--efu-main), #8e44ad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.4rem;
+}
+
+.waterfall-desc {
+  color: var(--efu-secondtext);
+  font-size: 0.95rem;
+  opacity: 0.8;
+}
+
+/* 相册 Tab 导航 */
+.album-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 1.2rem 0 1.8rem;
+  padding: 0;
+}
+
+.album-tab {
+  padding: 0.4rem 1.1rem;
+  border-radius: 2rem;
+  border: 2px solid var(--efu-main);
+  background: transparent;
+  color: var(--efu-main);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  letter-spacing: 0.02em;
+}
+
+.album-tab:hover,
+.album-tab.active {
+  background: var(--efu-main);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+  transform: translateY(-1px);
+}
+
+/* 瀑布流容器 */
+.waterfall-grid {
+  columns: 4;
+  column-gap: 12px;
+}
+
+@media (max-width: 1200px) {
+  .waterfall-grid { columns: 3; }
+}
+
+@media (max-width: 768px) {
+  .waterfall-grid { columns: 2; }
+}
+
+@media (max-width: 480px) {
+  .waterfall-grid { columns: 1; }
+}
+
+/* 每张图片卡片 */
+.wf-item {
+  break-inside: avoid;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  background: var(--efu-card-bg, #f0f0f0);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  transition: transform 0.3s cubic-bezier(.25,.8,.25,1),
+              box-shadow 0.3s ease;
+}
+
+.wf-item:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+}
+
+.wf-item img {
+  width: 100%;
+  display: block;
+  border-radius: 10px;
+  transition: filter 0.3s ease;
+}
+
+/* 悬浮遮罩 */
+.wf-item-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 10px;
+  display: flex;
+  align-items: flex-end;
+  padding: 12px;
+}
+
+.wf-item:hover .wf-item-overlay {
+  opacity: 1;
+}
+
+.wf-item-caption {
+  color: #fff;
+  font-size: 0.82rem;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* 放大镜图标 */
+.wf-item-overlay::before {
+  content: '🔍';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+  font-size: 1.6rem;
+  opacity: 0.9;
+}
+
+/* 加载占位动画 */
+.wf-item.loading img {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.wf-item.loaded img {
+  opacity: 1;
+}
+
+/* 空状态 */
+.wf-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--efu-secondtext);
+  opacity: 0.6;
+  font-size: 0.95rem;
+}
+
+/* ========================================
+   灯箱 (Lightbox)
+   ======================================== */
+.wf-lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+
+.wf-lightbox.open {
+  display: flex;
+}
+
+.wf-lightbox-mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.88);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.wf-lightbox-content {
+  position: relative;
+  z-index: 1;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wf-lightbox-content img {
+  max-width: 90vw;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  transition: opacity 0.2s ease;
+}
+
+.wf-lightbox-caption {
+  color: rgba(255,255,255,0.8);
+  font-size: 0.88rem;
+  margin-top: 0.8rem;
+  text-align: center;
+}
+
+/* 灯箱按钮 */
+.wf-lightbox-close,
+.wf-lightbox-prev,
+.wf-lightbox-next {
+  position: fixed;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.wf-lightbox-close:hover,
+.wf-lightbox-prev:hover,
+.wf-lightbox-next:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+.wf-lightbox-close {
+  top: 1.2rem;
+  right: 1.2rem;
+}
+
+.wf-lightbox-prev {
+  left: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.wf-lightbox-next {
+  right: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* 仅在写真相册页面生效 */
+body:not([data-type="photography"]) .waterfall-grid,
+body:not([data-type="photography"]) .album-tabs,
+body:not([data-type="photography"]) .waterfall-header {
+  display: none;
+}
+
+/* ========================================
+   Home Recent Posts - SSS-style Category Cards
+   首页文章区改为「分类 + 小竖卡」展示风格
+   ======================================== */
+#home #recent-posts {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+
+#home #recent-posts > .recent-post-item {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  border-radius: 12px;
+  overflow: hidden;
+  border: var(--style-border);
+  box-shadow: var(--efu-shadow-border);
+  background: var(--efu-card-bg);
+}
+
+#home #recent-posts > .recent-post-item .post_cover {
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+}
+
+#home #recent-posts > .recent-post-item .post_cover img.post_bg {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+
+#home #recent-posts > .recent-post-item > .recent-post-info {
+  min-height: auto !important;
+  gap: 10px !important;
+  padding: 12px 14px !important;
+}
+
+#home #recent-posts > .recent-post-item .recent-post-info-top .article-title {
+  font-size: 1.05rem;
+  line-height: 1.45;
+}
+
+#home #recent-posts > .recent-post-item .article-meta-wrap {
+  font-size: 0.78rem;
+}
+
+@media (max-width: 768px) {
+  #home #recent-posts {
+    grid-template-columns: 1fr;
+  }
+
+  #home #recent-posts > .recent-post-item .post_cover img.post_bg {
+    aspect-ratio: 4 / 5;
+  }
+}
+
+/* Disable avatar hover reaction on sidebar info card */
+#aside-content .card-widget.card-info .avatar,
+#aside-content .card-widget.card-info .sticker,
+#aside-content .card-widget.card-info .description {
+  transition: none !important;
+}
+
+#aside-content .card-widget.card-info:hover .avatar,
+#aside-content .card-widget.card-info:hover .sticker {
+  transform: none !important;
+}
+
+#aside-content .card-widget.card-info .description,
+#aside-content .card-widget.card-info:hover .description {
+  opacity: 0 !important;
+}
+
+/* Global: hide post author copyright card */
+#post .post-copyright {
+  display: none !important;
+}
